@@ -5,7 +5,7 @@ import java.util.List;
 
 public class TaskManager {
 
-    // Modelo sencillo de tarea sugerida
+    // Clase interna para representar una tarea
     public static class Task {
         private final int id;
         private String title;
