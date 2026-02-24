@@ -1,4 +1,4 @@
-# Práctica: Android Studio + AVD + Git + TaskManager (CRUD)
+# Práctica 1 - Configuración de Entorno, Git y Fundamentos de Java
 
 ## 1) Descripción breve de la práctica
 En esta práctica configuré el entorno de desarrollo en **Android Studio** (SDK y emuladores AVD), trabajé con **Git** usando ramas y resolución de conflictos, y programé una clase **TaskManager** en Java para administrar una lista de **Tareas Sugeridas** con operaciones **CRUD** (crear, leer/listar, actualizar y eliminar) usando una estructura tipo lista.
