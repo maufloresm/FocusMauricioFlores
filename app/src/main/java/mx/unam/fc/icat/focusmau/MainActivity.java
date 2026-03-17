@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +24,17 @@ public class MainActivity extends AppCompatActivity {
     private static final long SHORT_BREAK = 5 * 60 * 1000L;
     private static final long LONG_BREAK = 15 * 60 * 1000L;
     private static final int SESSIONS_BEFORE_LONG_BREAK = 4;
+
+    // Frases motivacionales mostradas al iniciar un descanso
+    private static final String[] MOTIVATIONAL_PHRASES = {
+            "¡Excelente trabajo! Mereces este descanso",
+            "Descansa, tu cerebro lo agradecerá",
+            "Un paso más hacia tu meta",
+            "El descanso es parte del éxito",
+            "¡Sigue así, vas increíble!",
+            "Respira, recarga y vuelve con todo",
+            "La constancia construye grandes cosas"
+    };
 
     // Estado del timer
     private enum Mode { FOCUS, SHORT_BREAK, LONG_BREAK }
@@ -36,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     // Vistas
     private TextView tvTimerDisplay;
     private TextView tvSessionsCompleted;
+    private TextView tvMotivationalQuote;
     private Button btnStartStop;
     private ImageButton btnReset;
     private ImageButton btnSkip;
@@ -54,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         tvTimerDisplay = findViewById(R.id.tvTimerDisplay);
         tvSessionsCompleted = findViewById(R.id.tvSessionsCompleted);
+        tvMotivationalQuote = findViewById(R.id.tvMotivationalQuote);
         btnStartStop = findViewById(R.id.btnStartStop);
         btnReset = findViewById(R.id.btnReset);
         btnSkip = findViewById(R.id.btnSkip);
@@ -170,11 +184,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Cambia de modo y arranca el timer
+    // Cambia de modo, muestra frase si es descanso y arranca el timer
     private void switchToMode(Mode mode) {
         currentMode = mode;
         timeLeftMs = getDurationForMode(mode);
         updateTimerDisplay(timeLeftMs);
+
+        // Muestra frase motivacional solo al iniciar un descanso
+        if (mode == Mode.SHORT_BREAK || mode == Mode.LONG_BREAK) {
+            showRandomMotivationalPhrase();
+        } else {
+            tvMotivationalQuote.setText("");
+        }
+
         startTimer();
     }
 
@@ -229,6 +251,12 @@ public class MainActivity extends AppCompatActivity {
 
             sessionDotsContainer.addView(dot);
         }
+    }
+
+    // Elige y muestra una frase aleatoria del array
+    private void showRandomMotivationalPhrase() {
+        int index = new Random().nextInt(MOTIVATIONAL_PHRASES.length);
+        tvMotivationalQuote.setText(MOTIVATIONAL_PHRASES[index]);
     }
 
     // Muestra un Toast y activa la vibración al terminar una sesión
