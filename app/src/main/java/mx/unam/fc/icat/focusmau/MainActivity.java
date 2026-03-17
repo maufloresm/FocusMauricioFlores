@@ -1,10 +1,12 @@
 package mx.unam.fc.icat.focusmau;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,9 +20,9 @@ public class MainActivity extends AppCompatActivity {
 
     // Duraciones en milisegundos
     private static final long FOCUS_DURATION = 25 * 60 * 1000L;
-    private static final long SHORT_BREAK =  5 * 60 * 1000L;
+    private static final long SHORT_BREAK = 5 * 60 * 1000L;
     private static final long LONG_BREAK = 15 * 60 * 1000L;
-    private static final int  SESSIONS_BEFORE_LONG_BREAK = 4;
+    private static final int SESSIONS_BEFORE_LONG_BREAK = 4;
 
     // Estado del timer
     private enum Mode { FOCUS, SHORT_BREAK, LONG_BREAK }
@@ -33,7 +35,10 @@ public class MainActivity extends AppCompatActivity {
 
     // Vistas
     private TextView tvTimerDisplay;
+    private TextView tvSessionsCompleted;
     private Button btnStartStop;
+    private ImageButton btnReset;
+    private ImageButton btnSkip;
     private LinearLayout sessionDotsContainer;
 
     // Inicializa actividad, vistas y eventos
@@ -48,13 +53,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         tvTimerDisplay = findViewById(R.id.tvTimerDisplay);
+        tvSessionsCompleted = findViewById(R.id.tvSessionsCompleted);
         btnStartStop = findViewById(R.id.btnStartStop);
+        btnReset = findViewById(R.id.btnReset);
+        btnSkip = findViewById(R.id.btnSkip);
         sessionDotsContainer = findViewById(R.id.sessionDotsContainer);
 
         // Tiempo inicial según el modo
         timeLeftMs = getDurationForMode(currentMode);
         updateTimerDisplay(timeLeftMs);
         updateSessionDots();
+        updateSessionsCounter();
 
         btnStartStop.setOnClickListener(v -> {
             if (isRunning) {
@@ -63,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
                 startTimer();
             }
         });
+
+        // Detiene el timer y reinicia el tiempo del modo actual
+        btnReset.setOnClickListener(v -> resetTimer());
+
+        // Salta al siguiente estado ignorando el tiempo restante
+        btnSkip.setOnClickListener(v -> skipToNext());
     }
 
     // Lógica del CountDownTimer
@@ -103,11 +118,44 @@ public class MainActivity extends AppCompatActivity {
         btnStartStop.setText(R.string.btn_start);
     }
 
+    // Detiene el timer y reinicia al tiempo inicial del modo actual
+    private void resetTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        isRunning = false;
+        timeLeftMs = getDurationForMode(currentMode);
+        updateTimerDisplay(timeLeftMs);
+        btnStartStop.setText(R.string.btn_start);
+    }
+
+    // Salta al siguiente modo sin esperar a que termine el timer
+    private void skipToNext() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        isRunning = false;
+
+        if (currentMode == Mode.FOCUS) {
+            focusSessions++;
+            updateSessionDots();
+            updateSessionsCounter();
+            if (focusSessions % SESSIONS_BEFORE_LONG_BREAK == 0) {
+                switchToMode(Mode.LONG_BREAK);
+            } else {
+                switchToMode(Mode.SHORT_BREAK);
+            }
+        } else {
+            switchToMode(Mode.FOCUS);
+        }
+    }
+
     // Maneja el fin de la sesión actual
     private void onSessionFinished() {
         if (currentMode == Mode.FOCUS) {
             focusSessions++;
             updateSessionDots();
+            updateSessionsCounter();
             notifyUser(getString(R.string.toast_focus_done));
             // Tras 4 enfoques, descanso largo
             if (focusSessions % SESSIONS_BEFORE_LONG_BREAK == 0) {
@@ -125,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
     // Cambia de modo y arranca el timer
     private void switchToMode(Mode mode) {
         currentMode = mode;
-        timeLeftMs  = getDurationForMode(mode);
+        timeLeftMs = getDurationForMode(mode);
         updateTimerDisplay(timeLeftMs);
         startTimer();
     }
@@ -148,6 +196,11 @@ public class MainActivity extends AppCompatActivity {
         tvTimerDisplay.setText(String.format("%02d:%02d", minutes, seconds));
     }
 
+    // Actualiza el contador de sesiones completadas en pantalla
+    private void updateSessionsCounter() {
+        tvSessionsCompleted.setText(getString(R.string.label_sessions_completed_count, focusSessions));
+    }
+
     // Recrea los puntos de sesión según las sesiones completadas
     private void updateSessionDots() {
         sessionDotsContainer.removeAllViews();
@@ -163,7 +216,8 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < SESSIONS_BEFORE_LONG_BREAK; i++) {
             ImageView dot = new ImageView(this);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dotSizePx, dotSizePx);
+            LinearLayout.LayoutParams params =
+                    new LinearLayout.LayoutParams(dotSizePx, dotSizePx);
             params.setMargins(dotMarginPx, 0, dotMarginPx, 0);
             dot.setLayoutParams(params);
 
@@ -183,7 +237,9 @@ public class MainActivity extends AppCompatActivity {
 
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         if (vibrator != null && vibrator.hasVibrator()) {
-            vibrator.vibrate(VibrationEffect.createOneShot(400, VibrationEffect.DEFAULT_AMPLITUDE));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(400, VibrationEffect.DEFAULT_AMPLITUDE));
+            }
         }
     }
 

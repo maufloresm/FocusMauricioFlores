@@ -9,7 +9,7 @@
     <string name="btn_reset">↺</string>
     <string name="btn_skip">⏭</string>
     <string name="label_session_status">FOCUS SESSION</string>
-    <string name="label_sessions_completed">Sessions: 0</string>
+    <string name="label_sessions_completed_count">Sessions: %d</string>
     <string name="cd_stats_icon">Stats</string>
     <string name="cd_settings_icon">Settings</string>
     <string name="default_timer">25:00</string>
