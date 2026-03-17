@@ -3,8 +3,9 @@ package mx.unam.fc.icat.focusmau;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -13,23 +14,24 @@ import androidx.core.view.WindowInsetsCompat;
 public class MainActivity extends AppCompatActivity {
 
     // Duraciones en milisegundos
-    private static final long FOCUS_DURATION  = 25 * 60 * 1000L;
-    private static final long SHORT_BREAK     =  5 * 60 * 1000L;
-    private static final long LONG_BREAK      = 15 * 60 * 1000L;
-    private static final int  SESSIONS_BEFORE_LONG_BREAK = 4;
+    private static final long FOCUS_DURATION = 25 * 60 * 1000L;
+    private static final long SHORT_BREAK =  5 * 60 * 1000L;
+    private static final long LONG_BREAK = 15 * 60 * 1000L;
+    private static final int SESSIONS_BEFORE_LONG_BREAK = 4;
 
     // Estado del timer
     private enum Mode { FOCUS, SHORT_BREAK, LONG_BREAK }
-    private Mode    currentMode    = Mode.FOCUS;
-    private int     focusSessions  = 0;   // Sesiones completadas
-    private boolean isRunning      = false;
+    private Mode currentMode = Mode.FOCUS;
+    private int focusSessions = 0;
+    private boolean isRunning = false;
 
     private CountDownTimer countDownTimer;
-    private long           timeLeftMs;    // Tiempo restante
+    private long timeLeftMs;
 
     // Vistas
     private TextView tvTimerDisplay;
-    private Button   btnStartStop;
+    private Button btnStartStop;
+    private LinearLayout sessionDotsContainer;
 
     // Inicializa actividad, vistas y eventos
     @Override
@@ -43,11 +45,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         tvTimerDisplay = findViewById(R.id.tvTimerDisplay);
-        btnStartStop   = findViewById(R.id.btnStartStop);
+        btnStartStop = findViewById(R.id.btnStartStop);
+        sessionDotsContainer = findViewById(R.id.sessionDotsContainer);
 
         // Tiempo inicial según el modo
         timeLeftMs = getDurationForMode(currentMode);
         updateTimerDisplay(timeLeftMs);
+        updateSessionDots();
 
         btnStartStop.setOnClickListener(v -> {
             if (isRunning) {
@@ -100,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
     private void onSessionFinished() {
         if (currentMode == Mode.FOCUS) {
             focusSessions++;
+            updateSessionDots();
             // Tras 4 enfoques, descanso largo
             if (focusSessions % SESSIONS_BEFORE_LONG_BREAK == 0) {
                 switchToMode(Mode.LONG_BREAK);
@@ -115,19 +120,18 @@ public class MainActivity extends AppCompatActivity {
     // Cambia de modo y arranca el timer
     private void switchToMode(Mode mode) {
         currentMode = mode;
-        timeLeftMs  = getDurationForMode(mode);
+        timeLeftMs = getDurationForMode(mode);
         updateTimerDisplay(timeLeftMs);
         startTimer();
     }
 
     // Helpers
-
     // Obtiene la duración según el modo
     private long getDurationForMode(Mode mode) {
         switch (mode) {
             case SHORT_BREAK: return SHORT_BREAK;
-            case LONG_BREAK:  return LONG_BREAK;
-            default:          return FOCUS_DURATION;
+            case LONG_BREAK: return LONG_BREAK;
+            default: return FOCUS_DURATION;
         }
     }
 
@@ -136,6 +140,40 @@ public class MainActivity extends AppCompatActivity {
         long minutes = ms / 1000 / 60;
         long seconds = (ms / 1000) % 60;
         tvTimerDisplay.setText(String.format("%02d:%02d", minutes, seconds));
+    }
+
+    // Recrea los puntos de sesión según las sesiones completadas
+    private void updateSessionDots() {
+        sessionDotsContainer.removeAllViews();
+
+        // Calcula cuántos puntos mostrar dentro del ciclo actual (máx 4)
+        int dotsToFill = focusSessions % SESSIONS_BEFORE_LONG_BREAK;
+
+        // Si se completó un ciclo completo, muestra los 4 llenos momentáneamente
+        if (dotsToFill == 0 && focusSessions > 0) {
+            dotsToFill = SESSIONS_BEFORE_LONG_BREAK;
+        }
+
+        int dotSizePx  = (int) (12 * getResources().getDisplayMetrics().density);
+        int dotMarginPx = (int) (4 * getResources().getDisplayMetrics().density);
+
+        for (int i = 0; i < SESSIONS_BEFORE_LONG_BREAK; i++) {
+            ImageView dot = new ImageView(this);
+
+            LinearLayout.LayoutParams params =
+                    new LinearLayout.LayoutParams(dotSizePx, dotSizePx);
+            params.setMargins(dotMarginPx, 0, dotMarginPx, 0);
+            dot.setLayoutParams(params);
+
+            // Punto lleno si ya se completó esa sesión, vacío si no
+            if (i < dotsToFill) {
+                dot.setImageResource(R.drawable.dot_session_completed);
+            } else {
+                dot.setImageResource(R.drawable.dot_session_empty);
+            }
+
+            sessionDotsContainer.addView(dot);
+        }
     }
 
     // Libera recursos al salir
