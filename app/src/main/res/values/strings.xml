@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FocusMau</string>
-    <string name="mode_focus">Enfoque</string>
-    <string name="mode_break">Descanso</string>
-    <string name="mode_rest">Descanso largo</string>
-    <string name="btn_start">Iniciar</string>
-    <string name="btn_stop">Pausar</string>
+    <string name="mode_focus">Focus</string>
+    <string name="mode_break">Break</string>
+    <string name="mode_rest">Rest</string>
+    <string name="btn_start">Start</string>
+    <string name="btn_stop">Pause</string>
     <string name="btn_reset">↺</string>
     <string name="btn_skip">⏭</string>
-    <string name="label_session_status">Sesión de enfoque</string>
-    <string name="label_sessions_completed">Sesiones: 0</string>
-    <string name="cd_stats_icon">Estadísticas</string>
-    <string name="cd_settings_icon">Configuración</string>
+    <string name="label_session_status">FOCUS SESSION</string>
+    <string name="label_sessions_completed">Sessions: 0</string>
+    <string name="cd_stats_icon">Stats</string>
+    <string name="cd_settings_icon">Settings</string>
     <string name="default_timer">25:00</string>
-    <string name="motivational_quote">¡Tú puedes lograrlo!</string>
+    <string name="motivational_quote">You got it!</string>
+    <string name="toast_focus_done">Session completed! Take a break </string>
+    <string name="toast_break_done">Break is over! Back to focus</string>
 </resources>
