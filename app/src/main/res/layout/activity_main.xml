@@ -1,19 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_background"
+    android:paddingHorizontal="@dimen/screen_padding_horizontal"
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/tvAppTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_md"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:text="@string/app_name"
+        android:textColor="@color/color_text_primary"
+        android:textSize="@dimen/app_title_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnStats" />
+
+    <ImageButton
+        android:id="@+id/btnStats"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/cd_stats_icon"
+        android:src="@android:drawable/ic_menu_agenda"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:tint="@color/color_text_secondary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnSettings"
+        app:layout_constraintBottom_toBottomOf="@id/tvAppTitle" />
+
+    <ImageButton
+        android:id="@+id/btnSettings"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/cd_settings_icon"
+        android:src="@android:drawable/ic_menu_preferences"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:tint="@color/color_text_secondary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tvAppTitle" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupMode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hola Mundo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/chip_group_margin_top"
+        app:chipSpacingHorizontal="@dimen/chip_spacing"
+        app:singleSelection="true"
+        app:selectionRequired="true"
+        app:singleLine="true"
+        app:layout_constraintTop_toBottomOf="@id/tvAppTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipFocus"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/btn_secondary_height"
+            android:checked="true"
+            android:text="@string/mode_focus" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipBreak"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/btn_secondary_height"
+            android:text="@string/mode_break" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipRest"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/btn_secondary_height"
+            android:text="@string/mode_rest" />
+    </com.google.android.material.chip.ChipGroup>
+
+    <TextView
+        android:id="@+id/tvTimerDisplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_timer"
+        android:textColor="@color/color_text_primary"
+        android:textSize="@dimen/timer_text_size"
+        android:fontFamily="monospace"
+        app:layout_constraintTop_toBottomOf="@id/chipGroupMode"
+        app:layout_constraintBottom_toTopOf="@id/btnStartStop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSessionStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_sm"
+        android:text="@string/label_session_status"
+        android:textColor="@color/color_text_secondary"
+        android:textSize="@dimen/quote_text_size"
+        app:layout_constraintBottom_toTopOf="@id/tvTimerDisplay"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/sessionDotsContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_sm"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/tvTimerDisplay"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSessionsCompleted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xs"
+        android:text="@string/label_sessions_completed"
+        android:textColor="@color/color_text_secondary"
+        android:textSize="@dimen/quote_text_size"
+        app:layout_constraintTop_toBottomOf="@id/sessionDotsContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tvMotivationalQuote"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="@string/motivational_quote"
+        android:textColor="@color/color_secondary"
+        android:textSize="@dimen/quote_text_size"
+        android:gravity="center"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnStartStop"
+        android:layout_width="@dimen/btn_primary_width"
+        android:layout_height="@dimen/btn_primary_height"
+        android:layout_marginBottom="48dp"
+        android:text="@string/btn_start"
+        android:textSize="@dimen/btn_text_size"
+        app:layout_constraintBottom_toTopOf="@id/tvMotivationalQuote"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnReset"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="16dp"
+        android:src="@android:drawable/ic_menu_revert"
+        android:contentDescription="@string/btn_reset"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:tint="@color/color_text_secondary"
+        app:layout_constraintTop_toTopOf="@id/btnStartStop"
+        app:layout_constraintBottom_toBottomOf="@id/btnStartStop"
+        app:layout_constraintEnd_toStartOf="@id/btnStartStop" />
+
+    <ImageButton
+        android:id="@+id/btnSkip"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="16dp"
+        android:src="@android:drawable/ic_media_next"
+        android:contentDescription="@string/btn_skip"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:tint="@color/color_text_secondary"
+        app:layout_constraintTop_toTopOf="@id/btnStartStop"
+        app:layout_constraintBottom_toBottomOf="@id/btnStartStop"
+        app:layout_constraintStart_toEndOf="@id/btnStartStop" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
