@@ -1,4 +1,4 @@
-# Pomodoro Timer
+# Práctica 2 - Lógica y UI del Pomodoro Timer
 
 ## Descripción
 
