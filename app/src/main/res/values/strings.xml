@@ -16,4 +16,11 @@
     <string name="motivational_quote">You got it!</string>
     <string name="toast_focus_done">Session completed! Take a break </string>
     <string name="toast_break_done">Break is over! Back to focus</string>
+    <string name="status_focus">Focus Session</string>
+    <string name="status_short_break">Break </string>
+    <string name="status_long_break">Rest</string>
+    <string name="dialog_chip_title">Change mode?</string>
+    <string name="dialog_chip_message">A session is currently in progress. Would you like to change modes and restart the timer?</string>
+    <string name="dialog_chip_confirm">Change</string>
+    <string name="dialog_chip_cancel">Cancel</string>
 </resources>
