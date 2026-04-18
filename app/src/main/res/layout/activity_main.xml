@@ -80,6 +80,20 @@
             android:text="@string/mode_rest" />
     </com.google.android.material.chip.ChipGroup>
 
+    <ProgressBar
+        android:id="@+id/progressBarTimer"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="260dp"
+        android:layout_height="260dp"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="100"
+        android:progressDrawable="@drawable/circular_progress"
+        app:layout_constraintTop_toBottomOf="@id/chipGroupMode"
+        app:layout_constraintBottom_toTopOf="@id/btnStartStop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <TextView
         android:id="@+id/tvTimerDisplay"
         android:layout_width="wrap_content"
@@ -88,20 +102,20 @@
         android:textColor="@color/color_text_primary"
         android:textSize="@dimen/timer_text_size"
         android:fontFamily="monospace"
-        app:layout_constraintTop_toBottomOf="@id/chipGroupMode"
-        app:layout_constraintBottom_toTopOf="@id/btnStartStop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/progressBarTimer"
+        app:layout_constraintBottom_toBottomOf="@id/progressBarTimer"
+        app:layout_constraintStart_toStartOf="@id/progressBarTimer"
+        app:layout_constraintEnd_toEndOf="@id/progressBarTimer" />
 
     <TextView
         android:id="@+id/tvSessionStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_sm"
+        android:layout_marginBottom="@dimen/spacing_md"
         android:text="@string/label_session_status"
         android:textColor="@color/color_text_secondary"
         android:textSize="@dimen/quote_text_size"
-        app:layout_constraintBottom_toTopOf="@id/tvTimerDisplay"
+        app:layout_constraintBottom_toTopOf="@id/progressBarTimer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -109,9 +123,9 @@
         android:id="@+id/sessionDotsContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_sm"
+        android:layout_marginTop="@dimen/spacing_md"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/tvTimerDisplay"
+        app:layout_constraintTop_toBottomOf="@id/progressBarTimer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -126,7 +140,6 @@
         app:layout_constraintTop_toBottomOf="@id/sessionDotsContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
 
     <TextView
         android:id="@+id/tvMotivationalQuote"

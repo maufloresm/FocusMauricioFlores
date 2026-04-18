@@ -23,4 +23,14 @@
     <string name="dialog_chip_message">A session is currently in progress. Would you like to change modes and restart the timer?</string>
     <string name="dialog_chip_confirm">Change</string>
     <string name="dialog_chip_cancel">Cancel</string>
+    <string name="title_history">Session History</string>
+    <string name="history_filter_today">Today</string>
+    <string name="history_filter_week">This week</string>
+    <string name="history_filter_all">All</string>
+    <string name="history_empty_icon">🎯</string>
+    <string name="history_empty_title">No sessions recorded yet</string>
+    <string name="history_empty_desc">Start your first Pomodoro session!</string>
+    <string name="session_count">%d sessions</string>
+    <string name="status_completed">Completed</string>
+    <string name="status_interrupted">Interrupted</string>
 </resources>

@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
@@ -25,24 +26,22 @@ import java.util.Random;
 import mx.unam.fc.icat.focusmau.model.Session;
 import mx.unam.fc.icat.focusmau.model.SessionManager;
 
-/**
- * Actividad principal que actua como Controlador en el patron MVC.
- * Gestiona el ciclo de vida del temporizador Pomodoro, los estados de sesion
- * y delega la persistencia al SessionManager (Modelo).
- */
+// Actividad principal que actua como Controlador en el patron MVC.
+// Gestiona el ciclo de vida del temporizador Pomodoro, los estados de sesion
+// y delega la persistencia al SessionManager (Modelo).
 public class MainActivity extends AppCompatActivity {
 
     // Duraciones en milisegundos
-    private static final long FOCUS_DURATION             = 25 * 60 * 1000L;
-    private static final long SHORT_BREAK                =  5 * 60 * 1000L;
-    private static final long LONG_BREAK                 = 15 * 60 * 1000L;
-    private static final int  SESSIONS_BEFORE_LONG_BREAK = 4;
+    private static final long FOCUS_DURATION = 25 * 60 * 1000L;
+    private static final long SHORT_BREAK = 5 * 60 * 1000L;
+    private static final long LONG_BREAK = 15 * 60 * 1000L;
+    private static final int SESSIONS_BEFORE_LONG_BREAK = 4;
 
     // Claves para guardar y restaurar el estado de la instancia
-    private static final String KEY_TIME_LEFT      = "key_time_left";
+    private static final String KEY_TIME_LEFT = "key_time_left";
     private static final String KEY_FOCUS_SESSIONS = "key_focus_sessions";
-    private static final String KEY_CURRENT_MODE   = "key_current_mode";
-    private static final String KEY_IS_RUNNING     = "key_is_running";
+    private static final String KEY_CURRENT_MODE = "key_current_mode";
+    private static final String KEY_IS_RUNNING = "key_is_running";
 
     // Frases motivacionales mostradas al iniciar un descanso
     private static final String[] MOTIVATIONAL_PHRASES = {
@@ -57,30 +56,31 @@ public class MainActivity extends AppCompatActivity {
 
     // Estado del timer
     private enum Mode { FOCUS, SHORT_BREAK, LONG_BREAK }
-    private Mode    currentMode   = Mode.FOCUS;
-    private int     focusSessions = 0;
-    private boolean isRunning     = false;
+    private Mode currentMode = Mode.FOCUS;
+    private int focusSessions = 0;
+    private boolean isRunning = false;
 
     private CountDownTimer countDownTimer;
-    private long           timeLeftMs;
+    private long timeLeftMs;
 
     // Sesion activa para registrar en SQLite
-    private Session     currentSession;
+    private Session currentSession;
     private SessionManager sessionManager;
 
     // Vistas
-    private TextView     tvTimerDisplay;
-    private TextView     tvSessionStatus;
-    private TextView     tvSessionsCompleted;
-    private TextView     tvMotivationalQuote;
-    private Button       btnStartStop;
-    private ImageButton  btnReset;
-    private ImageButton  btnSkip;
+    private TextView tvTimerDisplay;
+    private TextView tvSessionStatus;
+    private TextView tvSessionsCompleted;
+    private TextView tvMotivationalQuote;
+    private Button btnStartStop;
+    private ImageButton btnReset;
+    private ImageButton btnSkip;
     private LinearLayout sessionDotsContainer;
-    private ChipGroup    chipGroupMode;
-    private Chip         chipFocus;
-    private Chip         chipBreak;
-    private Chip         chipRest;
+    private ChipGroup chipGroupMode;
+    private Chip chipFocus;
+    private Chip chipBreak;
+    private Chip chipRest;
+    private ProgressBar progressBarTimer;
 
     // Inicializa actividad, vistas, modelo y eventos
     @Override
@@ -96,24 +96,25 @@ public class MainActivity extends AppCompatActivity {
         // Inicializa el modelo de persistencia
         sessionManager = new SessionManager(this);
 
-        tvTimerDisplay       = findViewById(R.id.tvTimerDisplay);
-        tvSessionStatus      = findViewById(R.id.tvSessionStatus);
-        tvSessionsCompleted  = findViewById(R.id.tvSessionsCompleted);
-        tvMotivationalQuote  = findViewById(R.id.tvMotivationalQuote);
-        btnStartStop         = findViewById(R.id.btnStartStop);
-        btnReset             = findViewById(R.id.btnReset);
-        btnSkip              = findViewById(R.id.btnSkip);
+        tvTimerDisplay = findViewById(R.id.tvTimerDisplay);
+        tvSessionStatus = findViewById(R.id.tvSessionStatus);
+        tvSessionsCompleted = findViewById(R.id.tvSessionsCompleted);
+        tvMotivationalQuote = findViewById(R.id.tvMotivationalQuote);
+        btnStartStop = findViewById(R.id.btnStartStop);
+        btnReset = findViewById(R.id.btnReset);
+        btnSkip = findViewById(R.id.btnSkip);
         sessionDotsContainer = findViewById(R.id.sessionDotsContainer);
-        chipGroupMode        = findViewById(R.id.chipGroupMode);
-        chipFocus            = findViewById(R.id.chipFocus);
-        chipBreak            = findViewById(R.id.chipBreak);
-        chipRest             = findViewById(R.id.chipRest);
+        chipGroupMode = findViewById(R.id.chipGroupMode);
+        chipFocus = findViewById(R.id.chipFocus);
+        chipBreak = findViewById(R.id.chipBreak);
+        chipRest = findViewById(R.id.chipRest);
+        progressBarTimer = findViewById(R.id.progressBarTimer);
 
         // Restaura el estado si existe, si no inicializa por defecto
         if (savedInstanceState != null) {
-            timeLeftMs    = savedInstanceState.getLong(KEY_TIME_LEFT);
+            timeLeftMs = savedInstanceState.getLong(KEY_TIME_LEFT);
             focusSessions = savedInstanceState.getInt(KEY_FOCUS_SESSIONS);
-            currentMode   = Mode.values()[savedInstanceState.getInt(KEY_CURRENT_MODE)];
+            currentMode = Mode.values()[savedInstanceState.getInt(KEY_CURRENT_MODE)];
             boolean wasRunning = savedInstanceState.getBoolean(KEY_IS_RUNNING);
             updateTimerDisplay(timeLeftMs);
             updateSessionDots();
@@ -195,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
             sessionManager.saveSession(currentSession);
             currentSession = null;
         }
-        isRunning  = false;
+        isRunning = false;
         timeLeftMs = getDurationForMode(currentMode);
         updateTimerDisplay(timeLeftMs);
         btnStartStop.setText(R.string.btn_start);
@@ -279,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
     // Cambia de modo, actualiza UI y arranca el timer
     private void switchToMode(Mode mode) {
         currentMode = mode;
-        timeLeftMs  = getDurationForMode(mode);
+        timeLeftMs = getDurationForMode(mode);
         updateTimerDisplay(timeLeftMs);
         updateSessionStatus();
         syncChipSelection();
@@ -299,8 +300,8 @@ public class MainActivity extends AppCompatActivity {
     private long getDurationForMode(Mode mode) {
         switch (mode) {
             case SHORT_BREAK: return SHORT_BREAK;
-            case LONG_BREAK:  return LONG_BREAK;
-            default:          return FOCUS_DURATION;
+            case LONG_BREAK: return LONG_BREAK;
+            default: return FOCUS_DURATION;
         }
     }
 
@@ -308,8 +309,8 @@ public class MainActivity extends AppCompatActivity {
     private int getModeMinutes(Mode mode) {
         switch (mode) {
             case SHORT_BREAK: return 5;
-            case LONG_BREAK:  return 15;
-            default:          return 25;
+            case LONG_BREAK: return 15;
+            default: return 25;
         }
     }
 
@@ -317,16 +318,22 @@ public class MainActivity extends AppCompatActivity {
     private String getModeLabel(Mode mode) {
         switch (mode) {
             case SHORT_BREAK: return getString(R.string.status_short_break);
-            case LONG_BREAK:  return getString(R.string.status_long_break);
-            default:          return getString(R.string.status_focus);
+            case LONG_BREAK: return getString(R.string.status_long_break);
+            default: return getString(R.string.status_focus);
         }
     }
 
-    // Formatea y actualiza el texto del timer a MM:SS
+    // Formatea el texto del timer a MM:SS y actualiza la barra de progreso
     private void updateTimerDisplay(long ms) {
         long minutes = ms / 1000 / 60;
         long seconds = (ms / 1000) % 60;
         tvTimerDisplay.setText(String.format("%02d:%02d", minutes, seconds));
+
+        // Actualiza el ProgressBar en base al tiempo restante
+        if (progressBarTimer != null) {
+            progressBarTimer.setMax((int) getDurationForMode(currentMode));
+            progressBarTimer.setProgress((int) ms);
+        }
     }
 
     // Actualiza el texto de estado segun el modo activo
@@ -356,8 +363,8 @@ public class MainActivity extends AppCompatActivity {
         int dotsToFill = focusSessions % SESSIONS_BEFORE_LONG_BREAK;
         if (dotsToFill == 0 && focusSessions > 0) dotsToFill = SESSIONS_BEFORE_LONG_BREAK;
 
-        int dotSizePx   = (int) (12 * getResources().getDisplayMetrics().density);
-        int dotMarginPx = (int) (4  * getResources().getDisplayMetrics().density);
+        int dotSizePx = (int) (12 * getResources().getDisplayMetrics().density);
+        int dotMarginPx = (int) (4 * getResources().getDisplayMetrics().density);
 
         for (int i = 0; i < SESSIONS_BEFORE_LONG_BREAK; i++) {
             ImageView dot = new ImageView(this);
@@ -399,9 +406,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(KEY_TIME_LEFT,     timeLeftMs);
+        outState.putLong(KEY_TIME_LEFT, timeLeftMs);
         outState.putInt(KEY_FOCUS_SESSIONS, focusSessions);
-        outState.putInt(KEY_CURRENT_MODE,   currentMode.ordinal());
+        outState.putInt(KEY_CURRENT_MODE, currentMode.ordinal());
         outState.putBoolean(KEY_IS_RUNNING, isRunning);
     }
 
