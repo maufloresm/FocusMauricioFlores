@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <string name="app_name">FocusMau</string>
+   <string name="mode_focus">Enfoque</string>
+   <string name="mode_break">Descanso</string>
+   <string name="mode_rest">Descanso largo</string>
+   <string name="btn_start">Iniciar</string>
+   <string name="btn_stop">Pausar</string>
+   <string name="btn_reset">↺</string>
+   <string name="btn_skip">⏭</string>
+   <string name="label_session_status">Sesión de enfoque</string>
+   <string name="label_sessions_completed_count">Sesiones: %d</string>
+   <string name="cd_stats_icon">Estadísticas</string>
+   <string name="cd_settings_icon">Configuración</string>
+   <string name="default_timer">25:00</string>
+   <string name="motivational_quote">¡Tú puedes lograrlo!</string>
+   <string name="toast_focus_done">¡Sesión completada! Tómate un descanso </string>
+   <string name="toast_break_done">¡Descanso terminado! A enfocarse de nuevo</string>
+   <string name="status_focus">Sesión de enfoque</string>
+   <string name="status_short_break">Descanso corto</string>
+   <string name="status_long_break">Descanso largo</string>
+   <string name="dialog_chip_title">¿Cambiar modo?</string>
+   <string name="dialog_chip_message">Hay una sesión en curso. ¿Deseas cambiar de modo y reiniciar el timer?</string>
+   <string name="dialog_chip_confirm">Cambiar</string>
+   <string name="dialog_chip_cancel">Cancelar</string>
+   <string name="title_history">Historial de sesiones</string>
+   <string name="history_filter_today">Hoy</string>
+   <string name="history_filter_week">Esta semana</string>
+   <string name="history_filter_all">Todo</string>
+   <string name="history_empty_icon">🎯</string>
+   <string name="history_empty_title">Aún no hay sesiones registradas</string>
+   <string name="history_empty_desc">¡Inicia tu primera sesión Pomodoro!</string>
+   <string name="session_count">%d sesiones</string>
+   <string name="status_completed">Completada</string>
+   <string name="status_interrupted">Interrumpida</string>
+   <string name="title_preferences">Preferencias</string>
+   <string name="pref_category_appearance">Apariencia</string>
+   <string name="pref_category_language">Idioma</string>
+   <string name="pref_theme_title">Tema de la aplicación</string>
+   <string name="pref_theme_summary">Elige entre modo claro u oscuro</string>
+   <string name="pref_lang_title">Idioma</string>
+   <string name="pref_lang_summary">Selecciona el idioma de la interfaz</string>
+   <string name="btn_history">Historial</string>
+   <string name="btn_preferences">Preferencias</string>
+</resources>
