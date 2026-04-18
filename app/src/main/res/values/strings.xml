@@ -44,4 +44,13 @@
     <string name="pref_lang_summary">Select the interface language</string>
     <string name="btn_history">History</string>
     <string name="btn_preferences">Preferences</string>
+    <string-array name="motivational_phrases">
+        <item>Excellent work! You deserve this break</item>
+        <item>Rest, your brain will thank you</item>
+        <item>One step closer to your goal</item>
+        <item>Rest is part of success</item>
+        <item>Keep it up, you are doing great!</item>
+        <item>Breathe, recharge and come back strong</item>
+        <item>Consistency builds great things</item>
+    </string-array>
 </resources>

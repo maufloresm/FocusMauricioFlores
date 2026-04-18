@@ -42,4 +42,13 @@
    <string name="pref_lang_summary">Selecciona el idioma de la interfaz</string>
    <string name="btn_history">Historial</string>
    <string name="btn_preferences">Preferencias</string>
+   <string-array name="motivational_phrases">
+      <item>¡Excelente trabajo! Mereces este descanso</item>
+      <item>Descansa, tu cerebro lo agradecerá</item>
+      <item>Un paso más hacia tu meta</item>
+      <item>El descanso es parte del éxito</item>
+      <item>¡Sigue así, vas increíble!</item>
+      <item>Respira, recarga y vuelve con todo</item>
+      <item>La constancia construye grandes cosas</item>
+   </string-array>
 </resources>

@@ -13,10 +13,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuItem;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -47,16 +50,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_CURRENT_MODE = "key_current_mode";
     private static final String KEY_IS_RUNNING = "key_is_running";
 
-    // Frases motivacionales mostradas al iniciar un descanso
-    private static final String[] MOTIVATIONAL_PHRASES = {
-            "Excelente trabajo! Mereces este descanso",
-            "Descansa, tu cerebro lo agradecera",
-            "Un paso mas hacia tu meta",
-            "El descanso es parte del exito",
-            "Sigue asi, vas increible!",
-            "Respira, recarga y vuelve con todo",
-            "La constancia construye grandes cosas"
-    };
+    // Preferencias guardadas para detectar cambios al volver a MainActivity
+    private String lastAppliedLang;
+    private String lastAppliedTheme;
 
     // Estado del timer
     private enum Mode { FOCUS, SHORT_BREAK, LONG_BREAK }
@@ -90,6 +86,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Aplica idioma guardado antes de inflar la vista
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        lastAppliedLang = prefs.getString(getString(R.string.lang_preference_key), "en");
+        lastAppliedTheme = prefs.getString(getString(R.string.theme_preference_key), "light");
+        applyLanguage(lastAppliedLang);
+        applyTheme(lastAppliedTheme);
+
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -389,10 +392,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Elige y muestra una frase aleatoria del array
+    // Elige y muestra una frase aleatoria del array de recursos (soporta traduccion)
     private void showRandomMotivationalPhrase() {
-        int index = new Random().nextInt(MOTIVATIONAL_PHRASES.length);
-        tvMotivationalQuote.setText(MOTIVATIONAL_PHRASES[index]);
+        String[] phrases = getResources().getStringArray(R.array.motivational_phrases);
+        int index = new Random().nextInt(phrases.length);
+        tvMotivationalQuote.setText(phrases[index]);
     }
 
     // Sincroniza la seleccion visual del chip con el modo actual
@@ -411,6 +415,50 @@ public class MainActivity extends AppCompatActivity {
                 vibrator.vibrate(VibrationEffect.createOneShot(400, VibrationEffect.DEFAULT_AMPLITUDE));
             }
         }
+    }
+
+    // Al volver de PreferencesActivity, detecta si cambio el idioma o el tema
+    // y recrea la actividad para aplicar los cambios correctamente.
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String currentLang = prefs.getString(getString(R.string.lang_preference_key), "en");
+        String currentTheme = prefs.getString(getString(R.string.theme_preference_key), "light");
+
+        boolean langChanged = !currentLang.equals(lastAppliedLang);
+        boolean themeChanged = !currentTheme.equals(lastAppliedTheme);
+
+        if (langChanged || themeChanged) {
+            lastAppliedLang = currentLang;
+            lastAppliedTheme = currentTheme;
+            recreate();
+        }
+    }
+
+    // Aplica el modo oscuro o claro segun la preferencia del usuario.
+    private void applyTheme(String themeValue) {
+        switch (themeValue) {
+            case "dark":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            case "light":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            default:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                break;
+        }
+    }
+
+    // Aplica el idioma seleccionado actualizando el Locale de la aplicacion.
+    private void applyLanguage(String langCode) {
+        java.util.Locale locale = new java.util.Locale(langCode);
+        java.util.Locale.setDefault(locale);
+        android.content.res.Configuration config = new android.content.res.Configuration();
+        config.setLocale(locale);
+        getBaseContext().getResources().updateConfiguration(
+                config, getBaseContext().getResources().getDisplayMetrics());
     }
 
     // Guarda el estado del timer ante cambios de configuracion
