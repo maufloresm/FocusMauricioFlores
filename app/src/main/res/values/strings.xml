@@ -42,4 +42,6 @@
     <string name="pref_theme_summary">Choose between light or dark mode</string>
     <string name="pref_lang_title">Language</string>
     <string name="pref_lang_summary">Select the interface language</string>
+    <string name="btn_history">History</string>
+    <string name="btn_preferences">Preferences</string>
 </resources>

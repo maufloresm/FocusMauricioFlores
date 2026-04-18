@@ -12,6 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -25,6 +28,7 @@ import java.util.Locale;
 import java.util.Random;
 import mx.unam.fc.icat.focusmau.model.Session;
 import mx.unam.fc.icat.focusmau.model.SessionManager;
+
 
 // Actividad principal que actua como Controlador en el patron MVC.
 // Gestiona el ciclo de vida del temporizador Pomodoro, los estados de sesion
@@ -145,6 +149,13 @@ public class MainActivity extends AppCompatActivity {
         chipFocus.setOnClickListener(v -> onChipClicked(Mode.FOCUS));
         chipBreak.setOnClickListener(v -> onChipClicked(Mode.SHORT_BREAK));
         chipRest.setOnClickListener(v -> onChipClicked(Mode.LONG_BREAK));
+        // Navega al historial de sesiones
+        ImageButton btnStats = findViewById(R.id.btnStats);
+        btnStats.setOnClickListener(v -> startActivity(new Intent(this, mx.unam.fc.icat.focusmau.view.SessionHistoryActivity.class)));
+
+        // Navega a las preferencias
+        ImageButton btnSettings = findViewById(R.id.btnSettings);
+        btnSettings.setOnClickListener(v -> startActivity(new Intent(this, mx.unam.fc.icat.focusmau.view.PreferencesActivity.class)));
     }
 
     // Logica del CountDownTimer
