@@ -1,0 +1,30 @@
+<androidx.preference.PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.preference.PreferenceCategory
+        app:title="@string/pref_category_appearance">
+
+        <androidx.preference.ListPreference
+            app:key="@string/theme_preference_key"
+            app:title="@string/pref_theme_title"
+            app:summary="@string/pref_theme_summary"
+            app:entries="@array/theme_options"
+            app:entryValues="@array/theme_values"
+            app:defaultValue="light" />
+
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory
+        app:title="@string/pref_category_language">
+
+        <androidx.preference.ListPreference
+            app:key="@string/lang_preference_key"
+            app:title="@string/pref_lang_title"
+            app:summary="@string/pref_lang_summary"
+            app:entries="@array/lang_options"
+            app:entryValues="@array/lang_values"
+            app:defaultValue="en" />
+
+    </androidx.preference.PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

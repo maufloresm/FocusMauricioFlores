@@ -33,4 +33,13 @@
     <string name="session_count">%d sessions</string>
     <string name="status_completed">Completed</string>
     <string name="status_interrupted">Interrupted</string>
+    <string name="title_preferences">Preferences</string>
+    <string name="theme_preference_key" translatable="false">focusmau_theme_key</string>
+    <string name="lang_preference_key" translatable="false">focusmau_lang_key</string>
+    <string name="pref_category_appearance">Appearance</string>
+    <string name="pref_category_language">Language</string>
+    <string name="pref_theme_title">App theme</string>
+    <string name="pref_theme_summary">Choose between light or dark mode</string>
+    <string name="pref_lang_title">Language</string>
+    <string name="pref_lang_summary">Select the interface language</string>
 </resources>
